@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	"octodrive/server/auth"
 	"os"
 
+	"github.com/byterotom/octodrive/server/auth"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 

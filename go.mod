@@ -1,4 +1,4 @@
-module octodrive
+module github.com/byterotom/octodrive
 
 go 1.25.1
 
