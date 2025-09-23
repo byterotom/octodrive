@@ -2,13 +2,12 @@ package server
 
 import (
 	"context"
-	"os"
 
 	"github.com/byterotom/octodrive/server/auth"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-const SECRET_PHRASE_SIZE = 12
+const SECRET_PHRASE_SIZE = 10
 
 type App struct {
 	*auth.Auth
@@ -23,7 +22,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 
 	runtime.EventsOnce(ctx, "frontend:checkSecret", func(...any) {
-		secretPhrase, err := loadSecretPhrase()
+		secretPhrase, err := auth.LoadSecretPhraseFromSystem()
 		if err != nil {
 			runtime.EventsEmit(ctx, "server:showSetup")
 			return
@@ -37,22 +36,18 @@ func (a *App) Startup(ctx context.Context) {
 func (a *App) GenerateSecretPhrase() string {
 
 	if a.Auth != nil {
-		return a.Auth.SecretPhrase
+		return a.SecretPhrase
 	}
 
 	secretPhrase := auth.NewSecretPhrase()
-	auth.SaveSecretPhraseOnSystem(secretPhrase)
 	a.Auth = auth.NewAuth(secretPhrase)
 
 	return secretPhrase
 }
 
 func (a *App) SetSecretPhrase(secretPhrase string) {
+	if a.Auth == nil {
+		a.Auth = auth.NewAuth(secretPhrase)
+	}
 	auth.SaveSecretPhraseOnSystem(secretPhrase)
-	a.Auth = auth.NewAuth(secretPhrase)
-}
-
-func loadSecretPhrase() (string, error) {
-	buf, err := os.ReadFile("server/data/secret_phrase.txt")
-	return string(buf), err
 }

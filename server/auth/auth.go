@@ -65,3 +65,8 @@ func SaveSecretPhraseOnSystem(secretPhrase string) {
 		panic(err)
 	}
 }
+
+func LoadSecretPhraseFromSystem() (string, error) {
+	buf, err := os.ReadFile("server/data/secret_phrase.txt")
+	return string(buf), err
+}
