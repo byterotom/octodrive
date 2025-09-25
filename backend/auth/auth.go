@@ -28,7 +28,7 @@ func NewAuth(secretPhrase string) *Auth {
 }
 
 func NewSecretPhrase() string {
-	data, err := os.ReadFile("server/data/words.txt")
+	data, err := os.ReadFile("backend/data/words.txt")
 	if err != nil {
 		panic(err)
 	}

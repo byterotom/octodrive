@@ -1,10 +1,10 @@
-package server
+package backend
 
 import (
 	"context"
 
-	"github.com/byterotom/octodrive/server/auth"
-	"github.com/byterotom/octodrive/server/discovery"
+	"github.com/byterotom/octodrive/backend/auth"
+	"github.com/byterotom/octodrive/backend/discovery"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -25,12 +25,12 @@ func (a *App) Startup(ctx context.Context) {
 	runtime.EventsOnce(ctx, "frontend:checkSecret", func(...any) {
 		secretPhrase, err := auth.LoadSecretPhraseFromSystem()
 		if err != nil {
-			runtime.EventsEmit(ctx, "server:showSetup")
+			runtime.EventsEmit(ctx, "backend:showSetup")
 			return
 		}
 
 		a.Auth = auth.NewAuth(secretPhrase)
-		runtime.EventsEmit(ctx, "server:showHome")
+		runtime.EventsEmit(ctx, "backend:showHome")
 	})
 }
 

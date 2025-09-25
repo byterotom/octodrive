@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { DiscoverDevices } from '../../wailsjs/go/server/App'
+import { DiscoverDevices } from '../../wailsjs/go/backend/App'
 import { EventsOff, EventsOn } from '../../wailsjs/runtime/runtime'
 
 const ips = ref<string[]>([])
@@ -9,8 +9,8 @@ const disableButton = ref<boolean>(false)
 function discover() {
   disableButton.value = true
   ips.value = []
-  EventsOff("server:discover")
-  EventsOn("server:discover", (src: string) => {
+  EventsOff("backend:discover")
+  EventsOn("backend:discover", (src: string) => {
     ips.value.push(src.split(":")[0])
   })
   DiscoverDevices().then(() => { }).finally(() => {

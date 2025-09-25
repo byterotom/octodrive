@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { GenerateSecretPhrase, SetSecretPhrase } from '../../wailsjs/go/server/App'
+import { GenerateSecretPhrase, SetSecretPhrase } from '../../wailsjs/go/backend/App'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
