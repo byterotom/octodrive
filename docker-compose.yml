@@ -1,0 +1,16 @@
+services:
+
+  desktop:
+    image: octodrive:latest
+    networks:
+      - octo-net
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/zeno/zzz/octodrive:/root/app
+    command: ["./build/bin/octodrive"]
+
+networks:
+  octo-net:
+    driver: bridge

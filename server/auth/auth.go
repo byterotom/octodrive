@@ -54,7 +54,7 @@ func NewSecretPhrase() string {
 }
 
 func SaveSecretPhraseOnSystem(secretPhrase string) {
-	file, err := os.Create("server/data/secret_phrase.txt")
+	file, err := os.Create("secret_phrase.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -67,6 +67,6 @@ func SaveSecretPhraseOnSystem(secretPhrase string) {
 }
 
 func LoadSecretPhraseFromSystem() (string, error) {
-	buf, err := os.ReadFile("server/data/secret_phrase.txt")
+	buf, err := os.ReadFile("secret_phrase.txt")
 	return string(buf), err
 }
