@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {ref} from 'vue'
-import {GenerateSecretPhrase, SetSecretPhrase} from '../../wailsjs/go/server/App'
+import { ref } from 'vue'
+import { GenerateSecretPhrase, SetSecretPhrase } from '../../wailsjs/go/server/App'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -9,15 +9,15 @@ const data = ref<string[]>(Array<string>(10).fill(""))
 
 
 function generateSecret() {
-  GenerateSecretPhrase().then((result:string) => {
+  GenerateSecretPhrase().then((result: string) => {
     secretPhrase.value = result
-    data.value = result.split(" ").slice(0,10)
+    data.value = result.split(" ").slice(0, 10)
   })
 }
 
-function nextPage(){
+function nextPage() {
   secretPhrase.value = data.value.join(" ").trim()
-  SetSecretPhrase(secretPhrase.value).then(()=>{
+  SetSecretPhrase(secretPhrase.value).then(() => {
     router.push("/home")
   })
 }
@@ -29,7 +29,7 @@ function nextPage(){
 
     <h1>Enter a phrase or generate a new one</h1>
     <div class="grid">
-      <input v-for="(_,i) in data" type="text" :key="i" v-model="data[i]"/>
+      <input v-for="(_, i) in data" type="text" :key="i" v-model="data[i]" />
     </div>
 
     <button @click="generateSecret">Generate</button>
@@ -45,12 +45,14 @@ function nextPage(){
   margin-bottom: 16px;
   margin-top: 16px;
 }
+
 input {
   padding: 6px 10px;
   border: 1px solid #ccc;
   text-transform: lowercase;
   /* border-radius: 4px; */
 }
+
 button {
   margin: 5px;
   padding: 8px 14px;
@@ -58,8 +60,9 @@ button {
   /* border-radius: 4px; */
   cursor: pointer;
 }
+
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;  
+  opacity: 0.6;
 }
 </style>

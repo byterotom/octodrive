@@ -11,6 +11,12 @@ services:
       - /home/zeno/zzz/octodrive:/root/app
     command: ["./build/bin/octodrive"]
 
+  server:
+    image: network-server
+    networks:
+      - octo-net
+    
+
 networks:
   octo-net:
     driver: bridge

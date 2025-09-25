@@ -1,2 +1,7 @@
-<script lang="ts" setup></script>
-<template>Home View</template>
+<script lang="ts" setup>
+import Discover from '../components/Discover.vue';
+
+</script>
+<template>
+    <Discover />
+</template>

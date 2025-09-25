@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/byterotom/octodrive/server/auth"
+	"github.com/byterotom/octodrive/server/discovery"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -50,4 +51,8 @@ func (a *App) SetSecretPhrase(secretPhrase string) {
 		a.Auth = auth.NewAuth(secretPhrase)
 	}
 	auth.SaveSecretPhraseOnSystem(secretPhrase)
+}
+
+func (a *App) DiscoverDevices() {
+	discovery.Discover(a.ctx)
 }
