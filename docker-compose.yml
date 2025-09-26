@@ -8,13 +8,17 @@ services:
       - DISPLAY=${DISPLAY}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /home/zeno/zzz/octodrive:/root/app
+      - .:/root/app
     command: ["./build/bin/octodrive"]
 
   server:
-    image: network-server
+    image: alpine:latest
     networks:
       - octo-net
+    working_dir: /root/
+    volumes:
+      - ./server:/root
+    command: ["./server"]
     
 
 networks:
