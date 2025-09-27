@@ -17,7 +17,7 @@ services:
       - octo-net
     working_dir: /root/
     volumes:
-      - ./server:/root
+      - ./server/bin:/root
     command: ["./server"]
     
 

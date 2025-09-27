@@ -37,7 +37,6 @@ func Discover(ctx context.Context) {
 			return
 		}
 		if string(buf[:n]) == "OK" {
-			slog.Info(src.String())
 			runtime.EventsEmit(ctx, "backend:discover", src.String())
 		}
 	}
