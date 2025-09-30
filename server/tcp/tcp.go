@@ -41,7 +41,7 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 
-	slog.Info(fmt.Sprintf("Handshake successful for %s", ip))
+	slog.Info(fmt.Sprintf("Handshake successfull for %s", ip))
 	req, err := requests.NewRequest(conn)
 	if err != nil {
 		slog.Error(err.Error())

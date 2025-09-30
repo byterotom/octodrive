@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ConnectServer, DiscoverDevices } from '../../wailsjs/go/backend/App'
+import { DiscoverDevices } from '../../wailsjs/go/backend/App'
 import { EventsOff, EventsOn } from '../../wailsjs/runtime/runtime'
 
 const ips = ref<string[]>([])
@@ -11,15 +11,11 @@ function discover() {
   ips.value = []
   EventsOff("backend:discover")
   EventsOn("backend:discover", (src: string) => {
-    ips.value.push(src.split(":")[0])
+    ips.value.push(src)
   })
   DiscoverDevices().then(() => { }).finally(() => {
     disableButton.value = false
   })
-}
-
-function handshake(ip: string) {
-  ConnectServer(ip).then(() => { })
 }
 </script>
 
@@ -31,7 +27,7 @@ function handshake(ip: string) {
     </button>
 
     <ul class="ip-list">
-      <li v-for="ip in ips" :key="ip" class="ip-item" @click="handshake(ip)">
+      <li v-for="ip in ips" :key="ip" class="ip-item">
         {{ ip }}
       </li>
     </ul>

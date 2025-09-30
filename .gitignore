@@ -4,3 +4,4 @@ frontend/dist
 frontend/wailsjs
 secret_phrase.txt
 server/bin
+Todo.md
