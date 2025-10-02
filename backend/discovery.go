@@ -10,7 +10,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func (a *App) DiscoverDevices() {
+func (a *App) DiscoverDevices() error {
 	laddr := &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 0,
@@ -19,7 +19,7 @@ func (a *App) DiscoverDevices() {
 	conn, err := net.ListenUDP("udp4", laddr)
 	if err != nil {
 		slog.Error(err.Error())
-		return
+		return err
 	}
 	conn.SetReadDeadline(time.Now().Add(20 * time.Second))
 
@@ -36,8 +36,9 @@ func (a *App) DiscoverDevices() {
 		if err != nil {
 			if ne, ok := err.(net.Error); !ok || !ne.Timeout() {
 				slog.Error(err.Error())
+				return err
 			}
-			return
+			break
 		}
 		if string(buf[:n]) == "OK" {
 			ip := strings.Split(src.String(), ":")[0]
@@ -45,6 +46,8 @@ func (a *App) DiscoverDevices() {
 			a.ips = append(a.ips, ip)
 		}
 	}
+	
+	return nil
 }
 
 func (a *App) handshake(rip string) (net.Conn, error) {

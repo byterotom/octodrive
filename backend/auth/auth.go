@@ -4,12 +4,13 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/sha256"
+	"log/slog"
 	"math/big"
 	"os"
 	"strings"
 )
 
-const SECRET_PHRASE_SIZE = 12
+const SECRET_PHRASE_SIZE = 10
 
 type Auth struct {
 	SecretPhrase string
@@ -27,11 +28,13 @@ func NewAuth(secretPhrase string) *Auth {
 	}
 }
 
-func NewSecretPhrase() string {
+func NewSecretPhrase() (string, error) {
 	data, err := os.ReadFile("backend/data/words.txt")
 	if err != nil {
-		panic(err)
+		slog.Error(err.Error())
+		return "", err
 	}
+
 	words := strings.Split(string(data), "\n")
 	totalWords := len(words)
 
@@ -41,7 +44,8 @@ func NewSecretPhrase() string {
 
 		idxBig, err := rand.Int(rand.Reader, big.NewInt(int64(totalWords)))
 		if err != nil {
-			panic(err)
+			slog.Error(err.Error())
+			return "", err
 		}
 
 		idx := int(idxBig.Int64())
@@ -50,23 +54,32 @@ func NewSecretPhrase() string {
 
 	secretPhrase := strings.Join(phrase, " ")
 
-	return secretPhrase
+	return secretPhrase, nil
 }
 
-func SaveSecretPhraseOnSystem(secretPhrase string) {
+func SaveSecretPhraseOnSystem(secretPhrase string) error {
 	file, err := os.Create("secret_phrase.txt")
 	if err != nil {
-		panic(err)
+		slog.Error(err.Error())
+		return err
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(secretPhrase)
 	if err != nil {
-		panic(err)
+		slog.Error(err.Error())
+		return err
 	}
+
+	return nil
 }
 
 func LoadSecretPhraseFromSystem() (string, error) {
 	buf, err := os.ReadFile("secret_phrase.txt")
-	return string(buf), err
+	if err != nil {
+		slog.Error(err.Error())
+		return "", err
+	}
+
+	return string(buf), nil
 }

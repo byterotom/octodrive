@@ -2,20 +2,30 @@
 import { ref } from 'vue'
 import { DiscoverDevices } from '../../wailsjs/go/backend/App'
 import { EventsOff, EventsOn } from '../../wailsjs/runtime/runtime'
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 
 const ips = ref<string[]>([])
 const disableButton = ref<boolean>(false)
 
-function discover() {
-  disableButton.value = true
-  ips.value = []
-  EventsOff("backend:discover")
-  EventsOn("backend:discover", (src: string) => {
-    ips.value.push(src)
-  })
-  DiscoverDevices().then(() => { }).finally(() => {
+async function discover() {
+  try {
+    disableButton.value = true
+    ips.value = []
+    EventsOff("backend:discover")
+    EventsOn("backend:discover", (src: string) => {
+      ips.value.push(src)
+    })
+
+    await DiscoverDevices()
+
+  } catch (err: unknown) {
+    toast.error("Error discovering devices")
+  } finally {
     disableButton.value = false
-  })
+  }
+
 }
 </script>
 

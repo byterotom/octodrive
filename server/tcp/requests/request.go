@@ -18,20 +18,20 @@ func NewRequest(conn net.Conn) (Request, error) {
 		return nil, err
 	}
 
-	var delete, update, send, get byte
+	var delete, update, upload, download byte
 
 	delete = 1 << 0
 	update = 1 << 1
-	send = 1 << 2
-	get = 1 << 3
+	upload = 1 << 2
+	download = 1 << 3
 
 	req := buf[0] & 15
 
 	switch req {
-	case get:
-		return &Get{}, nil
-	case send:
-		return &Send{}, nil
+	case download:
+		return &Download{}, nil
+	case upload:
+		return &Upload{}, nil
 	case update:
 		return &Update{}, nil
 	case delete:

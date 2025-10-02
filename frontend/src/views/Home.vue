@@ -1,13 +1,28 @@
 <script lang="ts" setup>
-import { SendFile } from '../../wailsjs/go/backend/App';
+import { SelectFilesToUpload, UploadFile } from '../../wailsjs/go/backend/App';
 import Discover from '../components/Discover.vue';
 
-function send() {
-    SendFile("")
+async function upload() {
+    try {
+        const files = await SelectFilesToUpload()
+        for (const file of files) {
+            uploadSingle(file)
+        }
+    } catch (err: unknown) {
+
+    } finally { }
+}
+
+async function uploadSingle(file: string) {
+    try {
+        await UploadFile(file)
+    } catch (err: unknown) {
+
+    } finally { }
 }
 
 </script>
 <template>
-    <button @click="send">Send</button>
+    <button @click="upload">Select</button>
     <Discover />
 </template>

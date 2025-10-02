@@ -2,24 +2,34 @@
 import { ref } from 'vue'
 import { GenerateSecretPhrase, SetSecretPhrase } from '../../wailsjs/go/backend/App'
 import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
+
 const router = useRouter()
+const toast = useToast()
 
 const secretPhrase = ref<string>("")
 const data = ref<string[]>(Array<string>(10).fill(""))
 
-
-function generateSecret() {
-  GenerateSecretPhrase().then((result: string) => {
+async function generateSecret() {
+  try {
+    const result: string = await GenerateSecretPhrase()
     secretPhrase.value = result
     data.value = result.split(" ").slice(0, 10)
-  })
+
+  } catch (err: unknown) {
+    toast.error("Error generating secret phrase")
+  }
 }
 
-function nextPage() {
-  secretPhrase.value = data.value.join(" ").trim()
-  SetSecretPhrase(secretPhrase.value).then(() => {
+async function nextPage() {
+  try {
+    secretPhrase.value = data.value.join(" ").trim()
+    await SetSecretPhrase(secretPhrase.value)
     router.push("/home")
-  })
+
+  } catch (err: unknown) {
+    toast.error("Error setting up secret phrase")
+  }
 }
 
 </script>

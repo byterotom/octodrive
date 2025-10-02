@@ -7,8 +7,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-const SECRET_PHRASE_SIZE = 10
-
 type App struct {
 	*auth.Auth
 	ctx context.Context
@@ -34,21 +32,23 @@ func (a *App) Startup(ctx context.Context) {
 	})
 }
 
-func (a *App) GenerateSecretPhrase() string {
+func (a *App) GenerateSecretPhrase() (string, error) {
 
 	if a.Auth != nil {
-		return a.SecretPhrase
+		return a.SecretPhrase, nil
 	}
 
-	secretPhrase := auth.NewSecretPhrase()
+	secretPhrase, err := auth.NewSecretPhrase()
+	if err != nil {
+		return "", err
+	}
+
 	a.Auth = auth.NewAuth(secretPhrase)
 
-	return secretPhrase
+	return secretPhrase, nil
 }
 
-func (a *App) SetSecretPhrase(secretPhrase string) {
-	if a.Auth == nil {
-		a.Auth = auth.NewAuth(secretPhrase)
-	}
-	auth.SaveSecretPhraseOnSystem(secretPhrase)
+func (a *App) SetSecretPhrase(secretPhrase string) error {
+	a.Auth = auth.NewAuth(secretPhrase)
+	return auth.SaveSecretPhraseOnSystem(secretPhrase)
 }

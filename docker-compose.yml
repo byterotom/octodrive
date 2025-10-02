@@ -6,6 +6,7 @@ services:
       - octo-net
     environment:
       - DISPLAY=${DISPLAY}
+      - GSETTINGS_BACKEND=memory
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - .:/root/app
