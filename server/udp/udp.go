@@ -19,13 +19,12 @@ func HandleDiscover() {
 
 	for {
 		buf := make([]byte, 64)
-		_, src, err := conn.ReadFromUDP(buf)
+		n, src, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			slog.Error(err.Error())
-			return
 		}
-		
-		slog.Info(string(buf) + " from " + src.String())
+
+		slog.Info(string(buf[:n]) + " from " + src.String())
 		_, err = conn.WriteToUDP([]byte("OK"), src)
 		if err != nil {
 			slog.Error(err.Error())

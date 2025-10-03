@@ -2,7 +2,6 @@ package backend
 
 import (
 	"crypto/ed25519"
-	"log/slog"
 	"net"
 	"strings"
 	"time"
@@ -18,7 +17,7 @@ func (a *App) DiscoverDevices() error {
 
 	conn, err := net.ListenUDP("udp4", laddr)
 	if err != nil {
-		slog.Error(err.Error())
+		a.logger.Error(err.Error())
 		return err
 	}
 	conn.SetReadDeadline(time.Now().Add(20 * time.Second))
@@ -35,7 +34,7 @@ func (a *App) DiscoverDevices() error {
 		n, src, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			if ne, ok := err.(net.Error); !ok || !ne.Timeout() {
-				slog.Error(err.Error())
+				a.logger.Error(err.Error())
 				return err
 			}
 			break
@@ -46,7 +45,7 @@ func (a *App) DiscoverDevices() error {
 			a.ips = append(a.ips, ip)
 		}
 	}
-	
+
 	return nil
 }
 

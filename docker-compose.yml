@@ -16,10 +16,10 @@ services:
     image: alpine:latest
     networks:
       - octo-net
-    working_dir: /root/
+    working_dir: /root/app
     volumes:
-      - ./server/bin:/root
-    command: ["./server"]
+      - ./server/bin:/root/app/bin
+    command: ["./bin/server"]
     
 
 networks:

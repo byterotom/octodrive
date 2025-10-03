@@ -4,7 +4,6 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/sha256"
-	"log/slog"
 	"math/big"
 	"os"
 	"strings"
@@ -31,7 +30,6 @@ func NewAuth(secretPhrase string) *Auth {
 func NewSecretPhrase() (string, error) {
 	data, err := os.ReadFile("backend/data/words.txt")
 	if err != nil {
-		slog.Error(err.Error())
 		return "", err
 	}
 
@@ -44,7 +42,6 @@ func NewSecretPhrase() (string, error) {
 
 		idxBig, err := rand.Int(rand.Reader, big.NewInt(int64(totalWords)))
 		if err != nil {
-			slog.Error(err.Error())
 			return "", err
 		}
 
@@ -60,14 +57,12 @@ func NewSecretPhrase() (string, error) {
 func SaveSecretPhraseOnSystem(secretPhrase string) error {
 	file, err := os.Create("secret_phrase.txt")
 	if err != nil {
-		slog.Error(err.Error())
 		return err
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(secretPhrase)
 	if err != nil {
-		slog.Error(err.Error())
 		return err
 	}
 
@@ -77,7 +72,6 @@ func SaveSecretPhraseOnSystem(secretPhrase string) error {
 func LoadSecretPhraseFromSystem() (string, error) {
 	buf, err := os.ReadFile("secret_phrase.txt")
 	if err != nil {
-		slog.Error(err.Error())
 		return "", err
 	}
 

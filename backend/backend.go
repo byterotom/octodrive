@@ -2,6 +2,8 @@ package backend
 
 import (
 	"context"
+	"io"
+	"log/slog"
 
 	"github.com/byterotom/octodrive/backend/auth"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -11,10 +13,19 @@ type App struct {
 	*auth.Auth
 	ctx context.Context
 	ips []string
+
+	logger *slog.Logger
 }
 
-func NewApp() *App {
-	return &App{Auth: nil, ips: []string{}}
+func NewApp(logFiles ...io.Writer) *App {
+
+	multiwriter := io.MultiWriter(logFiles...)
+
+	return &App{
+		Auth:   nil,
+		ips:    []string{},
+		logger: slog.New(slog.NewTextHandler(multiwriter, nil)),
+	}
 }
 
 func (a *App) Startup(ctx context.Context) {
@@ -40,6 +51,7 @@ func (a *App) GenerateSecretPhrase() (string, error) {
 
 	secretPhrase, err := auth.NewSecretPhrase()
 	if err != nil {
+		a.logger.Error(err.Error())
 		return "", err
 	}
 
@@ -50,5 +62,9 @@ func (a *App) GenerateSecretPhrase() (string, error) {
 
 func (a *App) SetSecretPhrase(secretPhrase string) error {
 	a.Auth = auth.NewAuth(secretPhrase)
-	return auth.SaveSecretPhraseOnSystem(secretPhrase)
+	if err := auth.SaveSecretPhraseOnSystem(secretPhrase); err != nil {
+		a.logger.Error(err.Error())
+		return err
+	}
+	return nil
 }

@@ -26,29 +26,33 @@ func RunServer() {
 		conn, err := listner.AcceptTCP()
 		if err != nil {
 			slog.Error(err.Error())
-			return
+			continue
 		}
-		go handleConnection(conn)
+		go func() {
+			err := handleConnection(conn)
+			if err != nil {
+				slog.Error(err.Error())
+			}
+		}()
 	}
 }
 
-func handleConnection(conn net.Conn) {
+func handleConnection(conn net.Conn) error {
 	defer conn.Close()
 	ip := strings.Split(conn.RemoteAddr().String(), ":")[0]
 
 	if err := handshake(conn); err != nil {
-		slog.Error(err.Error())
-		return
+		return err
 	}
 
 	slog.Info(fmt.Sprintf("Handshake successfull for %s", ip))
 	req, err := requests.NewRequest(conn)
 	if err != nil {
-		slog.Error(err.Error())
-		return
+		return err
 	}
 
 	req.HandleConn(conn)
+	return nil
 }
 
 func handshake(conn net.Conn) error {
