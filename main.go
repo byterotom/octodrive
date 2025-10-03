@@ -16,14 +16,17 @@ var assets embed.FS
 
 func main() {
 
+	// Open the log file
 	logFile, err := pkg.OpenFile("logs/octodrive.log")
 	if err != nil {
 		panic(err)
 	}
 	defer logFile.Close()
 
+	// Create a new app instance
 	app := backend.NewApp(os.Stdout, logFile)
 
+	// Run the instance using wails runtime
 	err = wails.Run(&options.App{
 		Title: "octodrive",
 		Width:  800,

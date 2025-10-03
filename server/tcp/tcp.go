@@ -17,17 +17,20 @@ func RunServer() {
 		IP:   net.IPv4zero,
 		Port: 6969,
 	}
+	
 	listner, err := net.ListenTCP("tcp4", laddr)
 	if err != nil {
 		slog.Error(err.Error())
 		return
 	}
+
 	for {
 		conn, err := listner.AcceptTCP()
 		if err != nil {
 			slog.Error(err.Error())
 			continue
 		}
+		// Wrapper routine to minimize error handling
 		go func() {
 			err := handleConnection(conn)
 			if err != nil {
@@ -38,19 +41,25 @@ func RunServer() {
 }
 
 func handleConnection(conn net.Conn) error {
+	// Close connection at end request
 	defer conn.Close()
+	
+	// Get IP from complete address 
 	ip := strings.Split(conn.RemoteAddr().String(), ":")[0]
 
+	// Handle handshake
 	if err := handshake(conn); err != nil {
 		return err
 	}
-
 	slog.Info(fmt.Sprintf("Handshake successfull for %s", ip))
+	
+	// Initialize new request instance
 	req, err := requests.NewRequest(conn)
 	if err != nil {
 		return err
 	}
 
+	// Handle request
 	req.HandleConn(conn)
 	return nil
 }

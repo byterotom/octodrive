@@ -6,6 +6,7 @@ import (
 )
 
 func HandleDiscover() {
+	// Listen for UDP broadcast on local address
 	addr := &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 9999,
@@ -24,10 +25,12 @@ func HandleDiscover() {
 			slog.Error(err.Error())
 		}
 
-		slog.Info(string(buf[:n]) + " from " + src.String())
-		_, err = conn.WriteToUDP([]byte("OK"), src)
-		if err != nil {
-			slog.Error(err.Error())
+		// Replying to the broadcast if message is appropriate
+		if string(buf[:n]) == "POLLOS" {
+			_, err = conn.WriteToUDP([]byte("OK"), src)
+			if err != nil {
+				slog.Error(err.Error())
+			}
 		}
 	}
 }

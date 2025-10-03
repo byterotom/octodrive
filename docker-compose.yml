@@ -5,9 +5,12 @@ services:
     networks:
       - octo-net
     environment:
+      # Display piping
       - DISPLAY=${DISPLAY}
+      # This is to resolve the gsettings file not found warning
       - GSETTINGS_BACKEND=memory
     volumes:
+      # X11 mounting
       - /tmp/.X11-unix:/tmp/.X11-unix
       - .:/root/app
     command: ["./build/bin/octodrive"]

@@ -18,8 +18,11 @@ type Auth struct {
 }
 
 func NewAuth(secretPhrase string) *Auth {
+	// Hash the secret phrase
 	phraseHash := sha256.Sum256([]byte(secretPhrase))
+	// Generate new key value pair from hash
 	privateKey := ed25519.NewKeyFromSeed(phraseHash[:])
+	
 	return &Auth{
 		SecretPhrase: secretPhrase,
 		PrivateKey:   privateKey,
@@ -28,16 +31,18 @@ func NewAuth(secretPhrase string) *Auth {
 }
 
 func NewSecretPhrase() (string, error) {
+	// Load words.txt for a large set of words
 	data, err := os.ReadFile("backend/data/words.txt")
 	if err != nil {
 		return "", err
 	}
 
+	// Split the data into indivisual words
 	words := strings.Split(string(data), "\n")
 	totalWords := len(words)
 
+	// Cryptographically select random words 
 	phrase := make([]string, SECRET_PHRASE_SIZE)
-
 	for i := range SECRET_PHRASE_SIZE {
 
 		idxBig, err := rand.Int(rand.Reader, big.NewInt(int64(totalWords)))

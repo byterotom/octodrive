@@ -10,6 +10,8 @@ import (
 )
 
 func (a *App) DiscoverDevices() error {
+	
+	// Listen for udp response on local address
 	laddr := &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 0,
@@ -23,7 +25,7 @@ func (a *App) DiscoverDevices() error {
 	conn.SetReadDeadline(time.Now().Add(20 * time.Second))
 
 	raddr := &net.UDPAddr{
-		IP:   net.IPv4bcast,
+		IP:   net.IPv4bcast, // Broadcast address
 		Port: 9999,
 	}
 	message := "POLLOS"
@@ -50,6 +52,7 @@ func (a *App) DiscoverDevices() error {
 }
 
 func (a *App) handshake(rip string) (net.Conn, error) {
+	// Connect to server via TCP
 	raddr := &net.TCPAddr{
 		IP:   net.ParseIP(rip),
 		Port: 6969,
